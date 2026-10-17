@@ -1,0 +1,15 @@
+/** Settings — PIN kasir & PIN pemilik (owner only, simbol visual konsisten). */
+var Settings={users:[],
+render:function(){var me=JSON.parse(localStorage.getItem('laundry_user')||'{}');
+document.getElementById('app').innerHTML='<section class="card settings"><div class=hd><div><h1>'+ic('settings','lg')+' Setting</h1><p class=mut>Kelola PIN kasir & pemilik. Hanya OWNER.</p></div></div><div id=setBody><div class=mut>'+ic('info')+' Memuat daftar user…</div></div></section>';
+if(me.role!=='owner'){document.getElementById('setBody').innerHTML='<div class=mut>'+ic('alert')+' Akses ditolak. Menu ini khusus OWNER.</div>';return;}
+Api.call('getUsers',{}).then(function(u){Settings.users=u||[];Settings.draw();});},
+draw:function(){var kas=Settings.users.filter(function(u){return u.role==='kasir';}),own=Settings.users.filter(function(u){return u.role==='owner';});
+var el=document.getElementById('setBody');
+el.innerHTML='<h3 class=sec-title>'+ic('users','lg')+' PIN Kasir <span class=mut>('+kas.length+' akun)</span></h3><div class=grid2>'+kas.map(function(k){return '<div class="card"><div class=row style="justify-content:space-between"><div><b>'+k.nama+'</b><div class=mut>'+k.user_id+' • '+k.outlet_id+'</div></div><span class=badge b-SIAP_DIAMBIL>'+k.role+'</span></div><div class=row><input data-pin-for="'+k.user_id+'" type=password inputmode=numeric maxlength=6 placeholder="PIN baru 4-6 digit"><button class="btn sm" data-save="'+k.user_id+'">Simpan PIN</button></div></div>';}).join('')+'</div>'+
+'<h3 class=sec-title>'+ic('star','lg')+' PIN Pemilik (Owner) <span class=mut>('+own.length+' akun)</span></h3><div class=grid2>'+own.map(function(o){return '<div class="card"><div class=row style="justify-content:space-between"><div><b>'+o.nama+'</b><div class=mut>'+o.user_id+' • '+o.outlet_id+'</div></div><span class=badge b-DIKERINGKAN>'+o.role+'</span></div><div class=row><input data-pin-for="'+o.user_id+'" type=password inputmode=numeric maxlength=6 placeholder="PIN baru 4-6 digit"><button class="btn sm" data-save-own="'+o.user_id+'">Simpan PIN</button></div></div>';}).join('')+'</div>';
+Array.prototype.forEach.call(el.querySelectorAll('[data-save]'),function(b){b.onclick=function(){Settings.savePin(b.dataset.save,'setKasirPin');};});
+Array.prototype.forEach.call(el.querySelectorAll('[data-save-own]'),function(b){b.onclick=function(){Settings.savePin(b.dataset.saveOwn,'setOwnerPin');};});},
+savePin:function(id,action){var inp=document.querySelector('[data-pin-for="'+id+'"]');var pin=(inp.value||'').trim();var me=JSON.parse(localStorage.getItem('laundry_user')||'{}');
+if(!/^\d{4,6}$/.test(pin))return toast('PIN 4-6 digit',false);
+Api.call(action,{user_id:id,pin:pin,oleh:me.nama||''}).then(function(){inp.value='';toast('PIN '+id+' diganti');}).catch(function(e){toast(e.message,false);});}};

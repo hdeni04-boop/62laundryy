@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 108" role="img" aria-label="+62 Laundry">
+  <defs>
+    <linearGradient id="g62" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e3a8a"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="gL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="gW" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1d4ed8"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <text x="8" y="56" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="900" textLength="106" lengthAdjust="spacingAndGlyphs" fill="url(#g62)">+62</text>
+  <text x="122" y="56" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="800" textLength="214" lengthAdjust="spacingAndGlyphs" fill="url(#gL)">LAUNDRY</text>
+  <path d="M10 78 C 105 94, 215 94, 294 70" fill="none" stroke="url(#gW)" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="307" cy="65" r="6" fill="#38bdf8"/>
+  <circle cx="322" cy="59" r="4.2" fill="#60a5fa"/>
+  <circle cx="335" cy="51" r="3" fill="#93c5fd"/>
+  <path d="M340 16 l2.2 5.6 5.6 2.2 -5.6 2.2 -2.2 5.6 -2.2 -5.6 -5.6 -2.2 5.6 -2.2 z" fill="#93c5fd"/>
+</svg>

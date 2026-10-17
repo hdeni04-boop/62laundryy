@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>+62Laundry</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="img/logo-icon.svg?v=2">
+    <script>try { var t = localStorage.getItem('laundry_theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) { }</script>
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand"><span class="logo logoimg logoimg-wide"><img src="img/logo.svg" alt="Logo +62Laundry"></span>
+        </div>
+        <nav class="nav" id="mainNav">
+            <a href="#/dashboard"><b class="ni"></b><span>Dasbor</span></a>
+            <a href="#/pos"><b class="ni"></b><span>POS</span></a>
+            <a href="#/orders"><b class="ni"></b><span>Pesanan</span></a>
+            <a href="#/customers"><b class="ni"></b><span>Pelanggan</span></a>
+            <a href="#/expenses"><b class="ni"></b><span>Pengeluaran</span></a>
+            <a href="#/stock"><b class="ni"></b><span>Stok</span></a>
+            <a href="#/settings"><b class="ni"></b><span>Setting</span></a>
+            <a href="#/tracking"><b class="ni"></b><span>Lacak</span></a>
+            <a href="#/laporan"><b class="ni"></b><span>Laporan</span></a>
+            <a href="#/help"><b class="ni"></b><span>Bantuan</span></a>
+        </nav>
+        <div class="tools">
+            <button class="iconbtn" id="btnBell" aria-label="Notifikasi"><svg class="ic" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                    aria-hidden="true">
+                    <path d="M6 9a6 6 0 1 1 12 0c0 4.5 1.5 6 1.5 6h-15S6 13.5 6 9z" />
+                    <path d="M10.5 19a1.8 1.8 0 0 0 3 0" />
+                </svg><span class="dot" id="bellCount" style="display:none">0</span></button>
+            <button class="iconbtn" id="btnTheme" aria-label="Ganti tema"><svg class="ic" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                    aria-hidden="true">
+                    <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z" />
+                </svg></button>
+            <button class="iconbtn" id="btnLogout" aria-label="Keluar"><svg class="ic" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                    aria-hidden="true">
+                    <path d="M14 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8" />
+                    <path d="M17 8l4 4-4 4" />
+                    <path d="M21 12H10" />
+                </svg></button>
+        </div>
+    </header>
+    <main id="app"></main>
+    <footer class="foot">
+        <div class="foot-in">
+            <div><b>+62 LAUNDRY</b> — © 2026 Hak Cipta Dilindungi Undang-Undang</div>
+            <div><a href="https://wa.me/6282115261194" target="_blank" rel="noopener">Hubungi Kami</a> · <a href="#"
+                    onclick="return legal('priv')">Kebijakan Privasi</a> · <a href="#"
+                    onclick="return legal('terms')">Syarat &amp; Ketentuan</a></div>
+        </div>
+    </footer>
+    <div class="ovl" id="legalOvl">
+        <div class="modal" role="dialog" aria-modal="true">
+            <h3><span id="legalTitle"></span><button onclick="legalClose()" aria-label="Tutup">✕</button></h3>
+            <div id="legalBody"></div>
+        </div>
+    </div>
+    <div id="toast"></div>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/icons.js"></script>
+    <script src="js/struk.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/pos.js"></script>
+    <script src="js/orders.js"></script>
+    <script src="js/customers.js"></script>
+    <script src="js/stock.js"></script>
+    <script src="js/expenses.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/help.js"></script>
+    <script src="js/tracking.js"></script>
+    <script src="js/laporan.js"></script>
+    <script>
+        var NAV_ICONS = { dashboard: 'home', pos: 'cart', orders: 'clipboard', customers: 'users', stock: 'box', expenses: 'money', settings: 'settings', tracking: 'pin', laporan: 'chart', help: 'help' };
+        document.querySelectorAll('#mainNav a').forEach(function (a) { var k = a.getAttribute('href').slice(2); a.querySelector('.ni').innerHTML = ic(NAV_ICONS[k] || 'dot'); });
+        /* head action icons + brand logo tersedia inline di HTML (progressive enhancement) */
+        var routes = { '#/dashboard': Dashboard.render, '#/pos': POS.render, '#/orders': Orders.render, '#/customers': Customers.render, '#/stock': Stock.render, '#/expenses': Expenses.render, '#/settings': Settings.render, '#/tracking': Tracking.render, '#/laporan': Laporan.render, '#/help': Help.render };
+        function markNav(h) { document.querySelectorAll('#mainNav a').forEach(function (a) { a.classList.toggle('on', a.getAttribute('href') === h); }); }
+        function router() { var h = location.hash || '#/dashboard'; if (new URLSearchParams(location.search).get('code')) h = '#/tracking'; if (!localStorage.getItem('laundry_user') && h !== '#/tracking') { markNav(''); return Login.render(); } markNav(h); (routes[h] || Dashboard.render)(); }
+        window.addEventListener('hashchange', router);
+        var Login = { render: function () { document.getElementById('app').innerHTML = '<section class="card login"><div class="logo"><span style="display:block;transform:scale(1.6)">' + ic('washer', 'lg') + '</span></div><h2 style="margin:0">+62Laundry</h2><p class="mut">Kasir & Manajemen — OUT-01</p><input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="••••••"><button class="btn" id="btnLogin">Masuk ' + ic('arrow') + '</button><div class="demo"><button class="chip" data-pin="1111">' + ic('user') + ' Kasir 1111</button><button class="chip" data-pin="123456">' + ic('star') + ' Owner 123456</button></div></section>'; document.querySelectorAll('[data-pin]').forEach(function (b) { b.onclick = function () { document.getElementById('pin').value = b.dataset.pin; }; }); document.getElementById('btnLogin').onclick = function () { Api.call('login', { pin: document.getElementById('pin').value }, true).then(function (r) { localStorage.setItem('laundry_user', JSON.stringify(r.user)); location.hash = '#/dashboard'; router(); startBell(); }).catch(function (e) { toast(e.message, false); }); }; } };
+        function toast(m, ok) { var t = document.getElementById('toast'); t.innerHTML = (ok === false ? ic('alert') : ic('check')) + '<span>' + m + '</span>'; t.className = 'show' + (ok === false ? ' err' : ''); clearTimeout(window._tt); window._tt = setTimeout(function () { t.className = ''; }, 3200); }
+        var LEGAL = {
+            priv: {
+                t: 'Kebijakan Privasi — +62Laundry', b: '<p>Privasi pelanggan kami jaga dengan serius. Ringkasannya:</p><ol><li><b>Data yang disimpan:</b> nama, nomor WA, dan alamat — hanya untuk keperluan operasional (nota, status cucian, notifikasi pengambilan).</li><li><b>Tidak dibagikan:</b> data pelanggan tidak dijual atau dibagikan ke pihak ketiga tanpa persetujuan, kecuali diwajibkan hukum.</li><li><b>Sesi kasir:</b> PIN login tersimpan lokal di perangkat kasir; selalu logout setelah selesai bertugas.</li><li><b>Foto/struk:</b> struk digital hanya dibagikan ke nomor WA pemilik order.</li><li><b>Permintaan hapus data:</b> hubungi kami via tombol Hubungi Kami di footer.</li></ol>'
+            },
+            terms: {
+                t: 'Syarat & Ketentuan — +62Laundry', b: '<p>Dengan menggunakan layanan +62Laundry (OUT-01), pelanggan menyetujui:</p><ol><li><b>Estimasi selesai</b> tertera pada nota; keterlambatan akibat force majeure akan diinformasikan via WA.</li><li><b>Pembayaran:</b> lunasi sebelum pengambilan kecuali ada kesepakatan tempo; sisa bayar tampil di halaman lacak.</li><li><b>Pengambilan:</b> harap diambil maksimal 30 hari setelah SIAP DIAMBIL; lewat dari itu bukan tanggung jawab kami atas susut/rusak simpan.</li><li><b>Komplain:</b> maksimal 1×24 jam setelah pengambilan dengan menunjukkan nota.</li><li><b>Pembatalan:</b> order DIBATALKAN sebelum proses cuci dikembalikan penuh; setelah diproses mengikuti kebijakan outlet.</li></ol>'
+            }
+        };
+        function legal(k) { var d = LEGAL[k]; if (!d) return false; document.getElementById('legalTitle').textContent = d.t; document.getElementById('legalBody').innerHTML = d.b; document.getElementById('legalOvl').className = 'ovl show'; return false; }
+        function legalClose() { document.getElementById('legalOvl').className = 'ovl'; }
+        document.getElementById('legalOvl').onclick = function (e) { if (e.target === this) legalClose(); };
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') legalClose(); });
+        function rupiah(n) { return 'Rp' + Number(n || 0).toLocaleString('id-ID'); }
+        var _th = document.getElementById('btnTheme'); function paintTheme() { var d = document.documentElement.getAttribute('data-theme') === 'dark'; _th.innerHTML = d ? ic('sun') : ic('moon'); }
+        _th.onclick = function () { var n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', n); localStorage.setItem('laundry_theme', n); paintTheme(); };
+        document.getElementById('btnLogout').onclick = function () { localStorage.clear(); location.hash = '#/tracking'; clearInterval(window._bell); router(); };
+        document.getElementById('btnBell').onclick = function () { sessionStorage.setItem('ordSt', 'SIAP_DIAMBIL'); location.hash = '#/orders'; if (location.hash === '#/orders') router(); };
+        function startBell() { clearInterval(window._bell); var up = function () { if (!localStorage.getItem('laundry_user')) return; Api.call('listOrders', { status: 'SIAP_DIAMBIL' }).then(function (r) { var b = document.getElementById('bellCount'); b.textContent = r.length; b.style.display = r.length ? 'grid' : 'none'; }).catch(function () { }); }; up(); window._bell = setInterval(up, 30000); }
+        paintTheme(); if (localStorage.getItem('laundry_user')) startBell(); router();
+    </script>
+</body>
+
+</html>
